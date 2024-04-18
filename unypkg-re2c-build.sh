@@ -34,13 +34,13 @@ mkdir -pv /uny/sources
 cd /uny/sources || exit
 
 pkgname="re2c"
-pkggit="https://github.com/php/php-src.git refs/tags/php-7.4*"
+pkggit="https://github.com/skvadrik/re2c.git refs/tags/*"
 gitdepth="--depth=1"
 
 ### Get version info from git remote
 # shellcheck disable=SC2086
-latest_head="$(git ls-remote --refs --tags --sort="v:refname" $pkggit | grep -E "php-7.4[0-9.]*$" | tail --lines=1)"
-latest_ver="$(echo "$latest_head" | grep -o "php-[0-9.]*" | sed "s|php-||")"
+latest_head="$(git ls-remote --refs --tags --sort="v:refname" $pkggit | grep -E "[0-9.]*$" | tail --lines=1)"
+latest_ver="$(echo "$latest_head" | grep -o "/[0-9.].*" | sed "s|/||")"
 latest_commit_id="$(echo "$latest_head" | cut --fields=1)"
 
 version_details
@@ -51,7 +51,7 @@ echo "newer" >release-"$pkgname"
 check_for_repo_and_create
 git_clone_source_repo
 
-cd php-src || exit
+cd re2c || exit
 
 autoreconf -i -W all
 
@@ -68,7 +68,7 @@ archiving_source
 unyc <<"UNYEOF"
 set -vx
 source /uny/build/functions
-pkgname="php"
+pkgname="re2c"
 
 version_verbose_log_clean_unpack_cd
 get_env_var_values
@@ -80,37 +80,7 @@ get_include_paths_temp
 unset LD_RUN_PATH
 
 ./configure \
-    --prefix=/uny/pkg/"$pkgname"/"$pkgver" \
-    --with-openssl \
-    --enable-fpm \
-    --disable-cgi \
-    --disable-phpdbg \
-    --enable-sockets \
-    --without-sqlite3 \
-    --without-pdo-sqlite \
-    --with-mysqli \
-    --with-pdo-mysql \
-    --enable-ctype \
-    --with-curl \
-    --enable-exif \
-    --enable-mbstring \
-    --with-zip \
-    --with-bz2 \
-    --enable-bcmath \
-    --with-jpeg \
-    --with-webp \
-    --enable-intl \
-    --enable-pcntl \
-    --with-ldap \
-    --with-gmp \
-    --with-password-argon2 \
-    --with-sodium \
-    --with-zlib \
-    --with-freetype \
-    --enable-soap \
-    --enable-gd \
-    --with-imagick \
-    --enable-redis=shared
+    --prefix=/uny/pkg/"$pkgname"/"$pkgver"
 
 make -j"$(nproc)"
 
