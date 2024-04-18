@@ -81,8 +81,7 @@ unset LD_RUN_PATH
 
 ./configure \
     --prefix=/uny/pkg/"$pkgname"/"$pkgver" \
-    --enable-parsers \
-    --enable-lexers
+    --enable-parsers
 
 make -j"$(nproc)"
 
