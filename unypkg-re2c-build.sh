@@ -53,7 +53,7 @@ git_clone_source_repo
 
 cd re2c || exit
 
-autoreconf -i -W all
+./autogen.sh
 
 cd /uny/sources || exit
 
