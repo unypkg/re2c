@@ -12,7 +12,15 @@ wget -qO- uny.nu/pkg | bash -s buildsys
 mkdir /uny/tmp
 
 ### Installing build dependencies
-unyp install python
+unyp install python openssl
+
+### Install Python Dependencies
+python -m pip install --upgrade pip
+python -m pip install docutils pygments
+
+pip3_bin=(/uny/pkg/python/*/bin/pip3)
+"${pip3_bin[0]}" install --upgrade pip
+"${pip3_bin[0]}" install docutils pygments
 
 ### Getting Variables from files
 UNY_AUTO_PAT="$(cat UNY_AUTO_PAT)"
@@ -65,7 +73,7 @@ archiving_source
 
 # unyc - run commands in uny's chroot environment
 # shellcheck disable=SC2154
-unyc <<"UNYEOF"
+unyc #<<"UNYEOF"
 set -vx
 source /uny/build/functions
 pkgname="re2c"
@@ -79,13 +87,33 @@ get_include_paths_temp
 
 unset LD_RUN_PATH
 
+### Minimal build needed for full build
 ./configure \
-    --prefix=/uny/pkg/"$pkgname"/"$pkgver" \
-    --enable-parsers
+    --disable-golang \
+    --disable-rust \
+    --prefix="$PWD"/install
 
 make -j"$(nproc)"
+make -j"$(nproc)" install
+make -j"$(nproc)" distclean
+./install/bin/re2c --version
 
-make install
+### Full build
+./configure \
+    --prefix=/uny/pkg/"$pkgname"/"$pkgver" \
+    --enable-libs \
+    --enable-parsers \
+    --enable-lexers \
+    --enable-docs \
+    --enable-debug \
+    RE2C_FOR_BUILD="$PWD"/install/bin/re2c
+
+# shellcheck disable=SC2038
+find "$PWD"/src -name '*.re' | xargs touch
+make -j"$(nproc)"
+bash -c "ulimit -s 256; make check -j$(nproc)"
+python run_tests.py --skeleton
+make -j"$(nproc)" install
 
 ####################################################
 ### End of individual build script
