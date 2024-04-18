@@ -80,7 +80,9 @@ get_include_paths_temp
 unset LD_RUN_PATH
 
 ./configure \
-    --prefix=/uny/pkg/"$pkgname"/"$pkgver"
+    --prefix=/uny/pkg/"$pkgname"/"$pkgver" \
+    --enable-parsers \
+    --enable-lexers
 
 make -j"$(nproc)"
 
