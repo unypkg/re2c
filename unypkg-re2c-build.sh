@@ -6,7 +6,7 @@ set -vx
 ######################################################################################################################
 ### Setup Build System and GitHub
 
-#apt install -y
+apt install -y python3 pip
 
 wget -qO- uny.nu/pkg | bash -s buildsys
 mkdir /uny/tmp
@@ -15,8 +15,8 @@ mkdir /uny/tmp
 unyp install python openssl
 
 ### Install Python Dependencies
-python -m pip install --upgrade pip
-python -m pip install docutils pygments
+python3 -m pip install --upgrade pip
+python3 -m pip install docutils pygments
 
 pip3_bin=(/uny/pkg/python/*/bin/pip3)
 "${pip3_bin[0]}" install --upgrade pip
@@ -85,7 +85,7 @@ get_include_paths_temp
 ####################################################
 ### Start of individual build script
 
-unset LD_RUN_PATH
+#unset LD_RUN_PATH
 
 ### Minimal build needed for full build
 ./configure \
