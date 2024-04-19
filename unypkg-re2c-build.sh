@@ -60,13 +60,13 @@ check_for_repo_and_create
 git_clone_source_repo
 
 cd re2c || exit
-
 ./autogen.sh
-
 cd /uny/sources || exit
 
 version_details
 archiving_source
+
+rm -rf /uny/pkg/linux-api-headers
 
 ######################################################################################################################
 ### Build
