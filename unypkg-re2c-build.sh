@@ -93,6 +93,15 @@ fi
 
 #unset LD_RUN_PATH
 
+# Link libtool m4 files
+automake_aclocal_dir=(/uny/pkg/automake/*/share/aclocal/)
+libtool_dir=(/uny/pkg/libtool/*/share/aclocal/)
+
+cd "${automake_aclocal_dir[0]}" || exit
+for file in "${libtool_dir[0]}"*; do
+    ln -svf  "$file" "$(basename $file)"
+done
+
 ./autogen.sh
 
 ### Minimal build needed for full build
