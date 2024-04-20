@@ -6,7 +6,7 @@ set -vx
 ######################################################################################################################
 ### Setup Build System and GitHub
 
-apt install -y python3 pip
+#apt install -y python3 pip
 
 wget -qO- uny.nu/pkg | bash -s buildsys
 mkdir /uny/tmp
@@ -15,8 +15,8 @@ mkdir /uny/tmp
 unyp install python openssl
 
 ### Install Python Dependencies
-python3 -m pip install --upgrade pip
-python3 -m pip install docutils pygments
+#python3 -m pip install --upgrade pip
+#python3 -m pip install docutils pygments
 
 pip3_bin=(/uny/pkg/python/*/bin/pip3)
 "${pip3_bin[0]}" install --upgrade pip
@@ -59,9 +59,9 @@ echo "newer" >release-"$pkgname"
 check_for_repo_and_create
 git_clone_source_repo
 
-cd re2c || exit
-./autogen.sh
-cd /uny/sources || exit
+#cd re2c || exit
+#./autogen.sh
+#cd /uny/sources || exit
 
 version_details
 archiving_source
@@ -83,7 +83,17 @@ get_include_paths
 ####################################################
 ### Start of individual build script
 
+if [[ ! -f /uny/paths/include-cplus ]]; then
+    gcc_dir=(/uny/pkg/gcc/*)
+    gcc_ver="$(basename "${gcc_dir[0]}")"
+    echo -n "${gcc_dir[0]}/include:${gcc_dir[0]}/include/c++/$gcc_ver" >/uny/paths/include-cplus
+    CPLUS_INCLUDE_PATH="$(cat /uny/paths/include-cplus):$(cat /uny/paths/include)"
+    export CPLUS_INCLUDE_PATH
+fi
+
 #unset LD_RUN_PATH
+
+./autogen.sh
 
 ### Minimal build needed for full build
 ./configure \
