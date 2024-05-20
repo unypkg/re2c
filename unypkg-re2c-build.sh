@@ -69,13 +69,13 @@ source /uny/git/unypkg/fn
 pkgname="re2c"
 
 # Link libtool m4 files
-automake_aclocal_dir=(/uny/pkg/automake/*/share/aclocal/)
-libtool_dir=(/uny/pkg/libtool/*/share/aclocal/)
+#automake_aclocal_dir=(/uny/pkg/automake/*/share/aclocal/)
+#libtool_dir=(/uny/pkg/libtool/*/share/aclocal/)
 
-cd "${automake_aclocal_dir[0]}" || exit
-for file in "${libtool_dir[0]}"*; do
-    ln -svf  "$file" "$(basename $file)"
-done
+#cd "${automake_aclocal_dir[0]}" || exit
+#for file in "${libtool_dir[0]}"*; do
+#    ln -svf  "$file" "$(basename $file)"
+#done
 
 version_verbose_log_clean_unpack_cd
 get_env_var_values
