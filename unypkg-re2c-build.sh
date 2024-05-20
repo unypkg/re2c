@@ -9,14 +9,9 @@ set -vx
 #apt install -y python3 pip
 
 wget -qO- uny.nu/pkg | bash -s buildsys
-mkdir /uny/tmp
 
 ### Installing build dependencies
 unyp install python openssl
-
-### Install Python Dependencies
-#python3 -m pip install --upgrade pip
-#python3 -m pip install docutils pygments
 
 pip3_bin=(/uny/pkg/python/*/bin/pip3)
 "${pip3_bin[0]}" install --upgrade pip
@@ -28,15 +23,13 @@ export UNY_AUTO_PAT
 GH_TOKEN="$(cat GH_TOKEN)"
 export GH_TOKEN
 
-source /uny/uny/build/github_conf
-source /uny/uny/build/download_functions
 source /uny/git/unypkg/fn
+uny_auto_github_conf
 
 ######################################################################################################################
 ### Timestamp & Download
 
-uny_build_date_seconds_now="$(date +%s)"
-uny_build_date_now="$(date -d @"$uny_build_date_seconds_now" +"%Y-%m-%dT%H.%M.%SZ")"
+uny_build_date
 
 mkdir -pv /uny/sources
 cd /uny/sources || exit
@@ -56,14 +49,12 @@ version_details
 # Release package no matter what:
 echo "newer" >release-"$pkgname"
 
-check_for_repo_and_create
 git_clone_source_repo
 
 #cd re2c || exit
 #./autogen.sh
 #cd /uny/sources || exit
 
-version_details
 archiving_source
 
 ######################################################################################################################
@@ -73,7 +64,8 @@ archiving_source
 # shellcheck disable=SC2154
 unyc <<"UNYEOF"
 set -vx
-source /uny/build/functions
+source /uny/git/unypkg/fn
+
 pkgname="re2c"
 
 # Link libtool m4 files
